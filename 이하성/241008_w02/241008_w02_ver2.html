@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>learning-mate week 02 (24.10.08)</title>
+    <!-- ******************** -->
+    <!-- HTML STYLE을 정의합니다 -->
+    <!-- ******************** -->
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        width: 640px;
+        padding: 20px;
+      }
+      fieldset {
+        display: flex;
+        flex-direction: column;
+        border: 0;
+        margin: 10px 0px;
+      }
+      b {
+        font-size: 14px;
+        color: #f55;
+      }
+      input,
+      textarea {
+        display: block;
+        padding: 0;
+        width: 600px;
+        height: 40px;
+        margin: 10px 0px;
+        padding: 4px 8px;
+      }
+      textarea {
+        min-height: 200px;
+        overflow: auto;
+        resize: none;
+      }
+      .writer_section {
+        display: flex;
+        justify-content: space-between;
+      }
+      .author_ID input,
+      .password_ID input {
+        width: 200px;
+      }
+      button {
+        width: 100px;
+        height: 40px;
+        background-color: #ffbe98;
+        border: 0;
+      }
+      button:disabled {
+        background-color: #bbb;
+      }
+    </style>
+    <!-- ********************************* -->
+    <!-- React와 babel을 CDN으로 다운로드 합니다 -->
+    <!-- ********************************* -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <!-- ********************************************** -->
+  <!-- React를 사용하여 JSX를 HTML MAIN에 INJECTION 합니다 -->
+  <!-- ********************************************** -->
+  <body>
+    <div>how can check input state without valid function or state</div>
+    <br />
+    <main id="root"></main>
+  </body>
+  <!-- ***************** -->
+  <!-- React 코드를 돌립니다 -->
+  <!-- ***************** -->
+  <script type="text/babel">
+    function App() {
+      const [inputFields, setInputFields] = React.useState({
+        author_ID: "",
+        password_ID: "",
+        title_ID: "",
+        content_ID: "",
+      });
+      const valid =
+        inputFields.author_ID &&
+        inputFields.password_ID &&
+        inputFields.title_ID &&
+        inputFields.content_ID;
+
+      const handleChange = (event) => {
+        const targetId = event.target.id;
+        const targetValue = event.target.value;
+        const nextInputFields = { ...inputFields };
+
+        nextInputFields[targetId] = targetValue;
+        setInputFields(nextInputFields);
+      };
+
+      function handleClick() {
+        alert(`
+        작성자는 ${inputFields.author_ID}
+        비밀번호는 ${inputFields.password_ID}
+        제목은 ${inputFields.title_ID}
+        내용 ${inputFields.content_ID}
+        `);
+      }
+
+      return (
+        <>
+          <div className="writer_section">
+            <InputField
+              id="author_ID"
+              label="작성자"
+              placeholder="작성자 명을 입력해 주세요."
+              onChange={handleChange}
+              value={inputFields.author_ID}
+              required
+            />
+            <InputField
+              id="password_ID"
+              label="비밀번호"
+              placeholder="비밀번호를 입력해 주세요."
+              onChange={handleChange}
+              value={inputFields.password_ID}
+              required
+            />
+          </div>
+          <InputField
+            id="title_ID"
+            label="제목"
+            placeholder="제목을 입력해 주세요."
+            onChange={handleChange}
+            value={inputFields.title_ID}
+            required
+          />
+          <InputField
+            id="content_ID"
+            label="내용"
+            placeholder="내용을 입력해 주세요."
+            onChange={handleChange}
+            textarea
+            value={inputFields.content_ID}
+            required
+          />
+          <InputField
+            id="sign_ID"
+            label="싸인"
+            placeholder="test test."
+            onChange={handleChange}
+          />
+          <InputField
+            id="youtube_ID"
+            label="유튜브"
+            placeholder="링크를 입력해 주세요."
+            onChange={handleChange}
+          />
+
+          <button disabled={!valid} onClick={handleClick}>
+            등록하기
+          </button>
+        </>
+      );
+    }
+
+    function InputField({ ...props }) {
+      const { id, placeholder, onChange, value, required, label, textarea } =
+        props;
+
+      return (
+        <fieldset className={id}>
+          <label>
+            {label}
+            <b>{required && " * "}</b>
+
+            {textarea ? (
+              <textarea id={id} placeholder={placeholder} onChange={onChange} />
+            ) : (
+              <input
+                id={id}
+                type={id === "password_ID" ? "password" : "text"}
+                placeholder={placeholder}
+                onChange={onChange}
+              />
+            )}
+          </label>
+
+          <b>{value || !required ? <br /> : "필수입력 사항 입니다."}</b>
+        </fieldset>
+      );
+    }
+
+    const Root = document.getElementById("root");
+    ReactDOM.render(<App />, Root);
+  </script>
+</html>
